@@ -15,40 +15,39 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        swipeRefreshLayout = findViewById(R.id.refreshLayout);
         webView = findViewById(R.id.webView);
+
+        // Enable JavaScript (optional)
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.refreshLayout);
+        // Load an initial URL
+        webView.loadUrl("https://sm.bekkahai.io/");
 
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        webView.setWebViewClient(new WebViewClient() {
-                            @Override
-                            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                webView.reload(); // Open links in the same WebView
-                                return true;
-                            }
-                        });
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-        );
+        // Set up WebViewClient to open links within the WebView
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url); // Open links in the same WebView
+                view.loadUrl(url);
                 return true;
             }
         });
 
-        webView.loadUrl("https://sm.bekkahai.io/");
+        // Set up SwipeRefreshLayout to refresh the WebView
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.reload();
+            }
+        });
+
+
     }
 
     @Override
